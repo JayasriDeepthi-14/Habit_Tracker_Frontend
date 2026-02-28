@@ -1,16 +1,116 @@
-# React + Vite
+# Habit Tracker – Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Title
+Habit Tracker – Productivity & Streak Management App
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Description
 
-## React Compiler
+Habit Tracker is a modern web application that helps users build consistent habits, track daily progress, maintain streaks, and analyze performance through reports and leaderboard rankings.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This repository contains the **React frontend** of the application.
 
-## Expanding the ESLint configuration
+Users can:
+- Add predefined or custom habits
+- Mark habits as completed
+- Track daily streaks
+- View leaderboard
+- Analyze weekly reports
+- Manage profile information
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Features
+
+- 🔐 Authentication (Login / Register)
+- 🛡 Protected Routes
+- 📊 Dashboard with Daily Progress
+- 📅 Habit Tracking System
+- 🔥 Streak Counter
+- 🏆 Leaderboard
+- 📈 Reports
+- 🧑 User Profile Page
+- 📱 Responsive Design
+- 🎨 Custom Black-Brown Theme UI
+
+---
+
+## Tech Stack Used
+
+- React.js
+- React Router DOM
+- Axios
+- Tailwind CSS
+- Context API (State Management)
+- Vite (Build Tool)
+
+---
+
+## Installation Steps
+
+1. Clone the Repository
+
+git clone https://github.com/JayasriDeepthi-14/Habit_Tracker_Frontend.git
+
+2. Navigate into folder
+
+cd Habit_Tracker_Frontend
+
+3. cd Habit_Tracker_Frontend
+
+npm install
+
+4. Start development server
+
+npm run dev
+
+Now, App runs at: http://localhost:5173
+
+---
+
+## Deployment Link
+
+https://deepthi-habit-traker.netlify.app/
+
+---
+
+## Backend API Link
+
+https://habit-tracker-backend-zzba.onrender.com/api
+
+---
+
+## Login Credentials
+
+User can create their own Login UserId and Password
+
+---
+
+## Screenshots
+
+### Login Page
+![Login](screenshots/login.png)
+
+### Register Page
+![Register](screenshots/register.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Habits Page
+![Habits](screenshots/habits.png)
+
+### Streak Page
+![Streak](screenshots/streak.png)
+
+### Reports Page
+![Reports](screenshots/reports.png)
+
+### Me Page
+![Me](screenshots/me.png)
+
+---
+
+## Video Walkthrough Link
+
