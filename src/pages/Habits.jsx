@@ -185,7 +185,7 @@ export default function Habits() {
 
         {/* CUSTOM HABIT SECTION */}
         <div>
-          <h3 className="text-lg font-semibold dark:text-white">
+          <h3 className="text-lg font-semibold">
             {editingId ? "Edit Custom Habit" : "Add Custom Habit"}
           </h3>
 

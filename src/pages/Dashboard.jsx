@@ -76,7 +76,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="text-primary text-white p-6 rounded-xl">
+        <div className="bg-violet-500 text-white p-6 rounded-xl">
           <h3>Total Habits</h3>
           <p className="text-3xl font-bold">
             {habits.length}
