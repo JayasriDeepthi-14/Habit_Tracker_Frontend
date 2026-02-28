@@ -2,42 +2,42 @@ import { useState, useEffect } from "react";
 import api from "../services/api";
 
 const categories = {
-  "Live healthier": [
+  "Live Healthier": [
     "Drinking Water",
     "Take Medicine",
     "Eat Healthy Food",
     "Morning Walk",
     "Stretching"
   ],
-  "Relieve pressure": [
+  "Relieve Pressure": [
     "Listening Songs",
     "Dancing",
     "Yoga",
     "Meditation",
     "Breathing Exercise"
   ],
-  "Try new things": [
+  "Try New Things": [
     "Video Editing",
     "Memes Making",
     "Designing",
     "Drawing",
     "Learn Something New"
   ],
-  "Be focused": [
+  "Be Focused": [
     "Reading Books",
     "Work Time",
     "Deep Work Session",
     "Study Session",
     "No Phone Time"
   ],
-  "Better relationship": [
+  "Better Relationship": [
     "Call Family",
     "Meet Friends",
     "Quality Time",
     "Express Gratitude",
     "Help Someone"
   ],
-  "Sleep better": [
+  "Sleep Better": [
     "Sleep Before 11PM",
     "No Phone Before Sleep",
     "8 Hours Sleep",

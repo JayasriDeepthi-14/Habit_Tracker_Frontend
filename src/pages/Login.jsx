@@ -28,7 +28,7 @@ export default function Login() {
       navigate("/dashboard");
 
     } catch (err) {
-      setError("Invalid credentials");
+      setError("Invalid Credentials");
     }
   };
 
