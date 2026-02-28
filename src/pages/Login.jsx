@@ -25,7 +25,7 @@ export default function Login() {
       });
 
       login(res.data);
-      navigate("/dashboard"); // redirect after login
+      navigate("/dashboard");
 
     } catch (err) {
       setError("Invalid credentials");
@@ -33,11 +33,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r bg-background">
 
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
 
-        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
+        <h2 className="text-3xl font-bold text-center text-primary mb-6">
           Welcome Back 👋
         </h2>
 
@@ -54,7 +54,7 @@ export default function Login() {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brown-400"
           />
 
           <input
@@ -62,12 +62,12 @@ export default function Login() {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brown-400"
           />
 
           <button
             onClick={submit}
-            className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+            className="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary-dark transition duration-200"
           >
             Login
           </button>
@@ -78,7 +78,7 @@ export default function Login() {
           Don’t have an account?{" "}
           <Link
             to="/register"
-            className="text-blue-600 font-semibold hover:underline"
+            className="text-primary font-semibold hover:underline"
           >
             Register
           </Link>

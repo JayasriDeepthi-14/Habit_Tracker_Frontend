@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import Header from "../components/Header";
 
 export default function Dashboard() {
 
@@ -11,6 +10,7 @@ export default function Dashboard() {
   const today = new Date().toISOString().split("T")[0];
 
   const loadData = async () => {
+  try {
     const h = await api.get("/habits");
     setHabits(h.data);
 
@@ -18,9 +18,20 @@ export default function Dashboard() {
     setStreak(s.data.streak);
 
     const logs = await api.get("/habits/logs");
-    const filtered = logs.data.filter(l => l.date === today);
-    setTodayLogs(filtered);
-  };
+
+    const todayDate = new Date().toISOString().split("T")[0];
+
+    const filteredLogs = logs.data.filter(l => {
+      const logDate = new Date(l.date).toISOString().split("T")[0];
+      return logDate === todayDate;
+    });
+
+    setTodayLogs(filteredLogs);
+
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   useEffect(() => {
     loadData();
@@ -32,101 +43,95 @@ export default function Dashboard() {
         habit_id: id,
         status
       });
+
       await loadData();
+
     } catch (err) {
-      alert("Already marked today");
+      console.log("Already marked today");
     }
   };
 
+  const completionPercent =
+    habits.length === 0
+      ? 0
+      : Math.round((todayLogs.length / habits.length) * 100);
+
   return (
-    <>
-      <Header />
+    <div className="p-6 space-y-8">
 
-      <div className="min-h-screen bg-gray-100 p-6">
+      {/* Stats */}
+      <div className="grid md:grid-cols-3 gap-6">
 
-        {/* Streak Card */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-blue-600">
-            Current Streak
-          </h2>
-          <p className="text-4xl font-extrabold mt-2 text-gray-800">
+        <div className="bg-white p-6 rounded-2xl shadow-lg">
+          <h3 className="text-gray-500">Today's Progress</h3>
+          <p className="text-3xl font-bold">
+            {completionPercent}%
+          </p>
+        </div>
+
+        <div className="bg-orange-500 text-white p-6 rounded-xl">
+          <h3>🔥 Current Streak</h3>
+          <p className="text-3xl font-bold">
             {streak} Days
           </p>
         </div>
 
-        {/* Today's Habits */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Today's Habits
-          </h2>
-
-          <div className="space-y-4">
-            {habits.map(h => {
-
-              const alreadyMarked = todayLogs.some(
-                l => l.habit_id === h.id
-              );
-
-              return (
-                <div
-                  key={h.id}
-                  className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm"
-                >
-                  <div>
-                    <p className="font-medium text-gray-800">
-                      {h.title}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {h.category} • {h.priority}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2">
-
-                    <button
-                      disabled={alreadyMarked}
-                      onClick={() => track(h.id, "completed")}
-                      className={`px-3 py-1 rounded-md ${
-                        alreadyMarked
-                          ? "bg-gray-400 cursor-not-allowed text-white"
-                          : "bg-green-500 hover:bg-green-600 text-white"
-                      }`}
-                    >
-                      Completed
-                    </button>
-
-                    <button
-                      disabled={alreadyMarked}
-                      onClick={() => track(h.id, "skipped")}
-                      className={`px-3 py-1 rounded-md ${
-                        alreadyMarked
-                          ? "bg-gray-400 cursor-not-allowed text-white"
-                          : "bg-yellow-500 hover:bg-yellow-600 text-white"
-                      }`}
-                    >
-                      Skipped
-                    </button>
-
-                    <button
-                      disabled={alreadyMarked}
-                      onClick={() => track(h.id, "missed")}
-                      className={`px-3 py-1 rounded-md ${
-                        alreadyMarked
-                          ? "bg-gray-400 cursor-not-allowed text-white"
-                          : "bg-red-500 hover:bg-red-600 text-white"
-                      }`}
-                    >
-                      Missed
-                    </button>
-
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        <div className="text-primary text-white p-6 rounded-xl">
+          <h3>Total Habits</h3>
+          <p className="text-3xl font-bold">
+            {habits.length}
+          </p>
         </div>
 
       </div>
-    </>
+
+      {/* Today's Tasks */}
+      <div>
+        <h2 className="text-xl font-semibold mb-6">
+          Today's Tasks
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-4">
+
+          {habits.map(h => {
+
+            const alreadyMarked = todayLogs.some(
+              l => l.habit_id === h.id
+            );
+
+            return (
+              <div
+                key={h.id}
+                className="bg-white p-5 rounded-xl shadow flex justify-between items-center"
+              >
+                <div>
+                  <p className="font-semibold">
+                    {h.title}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {h.category}
+                  </p>
+                </div>
+
+                <button
+                  disabled={alreadyMarked}
+                  onClick={() => track(h.id, "completed")}
+                  className={`px-4 py-2 rounded-lg text-white transition ${
+                    alreadyMarked
+                      ? "bg-green-600 cursor-not-allowed"
+                      : "bg-red-500 hover:bg-red-600"
+                  }`}
+                >
+                  {alreadyMarked ? "Completed" : "Mark"}
+                </button>
+
+              </div>
+            );
+          })}
+
+        </div>
+      </div>
+
+    </div>
   );
 }

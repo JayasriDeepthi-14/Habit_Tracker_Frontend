@@ -1,162 +1,253 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
-import Header from "../components/Header";
+
+const categories = {
+  "Live healthier": [
+    "Drinking Water",
+    "Take Medicine",
+    "Eat Healthy Food",
+    "Morning Walk",
+    "Stretching"
+  ],
+  "Relieve pressure": [
+    "Listening Songs",
+    "Dancing",
+    "Yoga",
+    "Meditation",
+    "Breathing Exercise"
+  ],
+  "Try new things": [
+    "Video Editing",
+    "Memes Making",
+    "Designing",
+    "Drawing",
+    "Learn Something New"
+  ],
+  "Be focused": [
+    "Reading Books",
+    "Work Time",
+    "Deep Work Session",
+    "Study Session",
+    "No Phone Time"
+  ],
+  "Better relationship": [
+    "Call Family",
+    "Meet Friends",
+    "Quality Time",
+    "Express Gratitude",
+    "Help Someone"
+  ],
+  "Sleep better": [
+    "Sleep Before 11PM",
+    "No Phone Before Sleep",
+    "8 Hours Sleep",
+    "Relax Music",
+    "Night Routine"
+  ]
+};
 
 export default function Habits() {
 
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedTasks, setSelectedTasks] = useState([]);
+  const [customTitle, setCustomTitle] = useState("");
   const [habits, setHabits] = useState([]);
-  const [form, setForm] = useState({
-    title: "",
-    category: "",
-    priority: "Low"
-  });
+  const [editingId, setEditingId] = useState(null);
+  const [search, setSearch] = useState("");
 
-  // Load habits
-  const load = () =>
-    api.get("/habits").then(r => setHabits(r.data));
+  const load = async () => {
+    const res = await api.get("/habits");
+    setHabits(res.data);
+  };
 
   useEffect(() => {
     load();
   }, []);
 
-  // Add new habit
-  const add = async () => {
-    if (!form.title) return;
+  const toggleTask = (task) => {
+    if (selectedTasks.includes(task)) {
+      setSelectedTasks(selectedTasks.filter(t => t !== task));
+    } else {
+      setSelectedTasks([...selectedTasks, task]);
+    }
+  };
 
-    await api.post("/habits", form);
-
-    setForm({
-      title: "",
-      category: "",
-      priority: "Low"
-    });
-
+  const saveSelected = async () => {
+    for (let task of selectedTasks) {
+      await api.post("/habits", {
+        title: task,
+        category: selectedCategory,
+        priority: "Medium"
+      });
+    }
+    setSelectedTasks([]);
+    setSelectedCategory(null);
     load();
   };
 
-  // Delete habit
-  const deleteHabit = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this habit?");
-    if (!confirmDelete) return;
+  const addOrUpdateCustom = async () => {
+    if (!customTitle) return;
 
+    if (editingId) {
+      await api.put(`/habits/${editingId}`, {
+        title: customTitle,
+        category: "Custom",
+        priority: "Medium"
+      });
+      setEditingId(null);
+    } else {
+      await api.post("/habits", {
+        title: customTitle,
+        category: "Custom",
+        priority: "Medium"
+      });
+    }
+
+    setCustomTitle("");
+    load();
+  };
+
+  const editHabit = (habit) => {
+    setCustomTitle(habit.title);
+    setEditingId(habit.id);
+  };
+
+  const deleteHabit = async (id) => {
     await api.delete(`/habits/${id}`);
     load();
   };
 
+  const filteredHabits = habits.filter(h =>
+    h.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
-      <Header />
 
-      <div className="min-h-screen bg-gray-100 p-6">
+      <div className="p-6 space-y-10">
 
-        {/* Add Habit Card */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8 max-w-2xl mx-auto">
+        {/* CATEGORY SECTION */}
+        {!selectedCategory ? (
+          <>
+            <h2 className="text-2xl font-bold">
+              Choose Your Target
+            </h2>
 
-          <h2 className="text-2xl font-bold text-blue-600 mb-4">
-            Add New Habit
-          </h2>
-
-          <div className="space-y-4">
-
-            <input
-              type="text"
-              placeholder="Habit Title"
-              value={form.title}
-              onChange={e =>
-                setForm({ ...form, title: e.target.value })
-              }
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-
-            <input
-              type="text"
-              placeholder="Category (Health, Study, etc.)"
-              value={form.category}
-              onChange={e =>
-                setForm({ ...form, category: e.target.value })
-              }
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-
-            <select
-              value={form.priority}
-              onChange={e =>
-                setForm({ ...form, priority: e.target.value })
-              }
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              <option value="Low">Low Priority</option>
-              <option value="Medium">Medium Priority</option>
-              <option value="High">High Priority</option>
-            </select>
-
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+              {Object.keys(categories).map(cat => (
+                <div
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700"
+                >
+                  {cat}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
             <button
-              onClick={add}
-              className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+              onClick={() => setSelectedCategory(null)}
+              className="text-primary"
             >
-              Add Habit
+              ← Back
             </button>
 
+            <h2 className="text-xl font-semibold mt-4">
+              {selectedCategory}
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-4 mt-6">
+              {categories[selectedCategory].map(task => (
+                <div
+                  key={task}
+                  onClick={() => toggleTask(task)}
+                  className={`p-4 rounded-lg cursor-pointer ${
+                    selectedTasks.includes(task)
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  {task}
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={saveSelected}
+              className="mt-6 bg-primary text-white px-6 py-2 rounded-lg"
+            >
+              Save Selected
+            </button>
+          </>
+        )}
+
+        {/* CUSTOM HABIT SECTION */}
+        <div>
+          <h3 className="text-lg font-semibold dark:text-white">
+            {editingId ? "Edit Custom Habit" : "Add Custom Habit"}
+          </h3>
+
+          <div className="flex gap-3 mt-4">
+            <input
+              value={customTitle}
+              onChange={(e) => setCustomTitle(e.target.value)}
+              placeholder="Enter custom habit"
+              className="border p-2 rounded w-full"
+            />
+            <button
+              onClick={addOrUpdateCustom}
+              className="bg-green-600 text-white px-4 rounded"
+            >
+              {editingId ? "Update" : "Add"}
+            </button>
           </div>
         </div>
 
-        {/* Habit List */}
-        <div className="max-w-4xl mx-auto">
+        {/* SEARCH */}
+        <div>
+          <input
+            placeholder="Search saved habits..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
 
-          <h2 className="text-xl font-semibold mb-4">
-            Your Habits
-          </h2>
+        {/* SAVED HABITS */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">
+            Your Saved Habits
+          </h3>
 
-          {habits.length === 0 ? (
-            <p className="text-gray-500">
-              No habits added yet.
-            </p>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid md:grid-cols-2 gap-4">
+            {filteredHabits.map(h => (
+              <div
+                key={h.id}
+                className="bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition duration-200 border border-gray-100 dark:border-gray-700"
+              >
+                <span className="dark:text-white">
+                  {h.title}
+                </span>
 
-              {habits.map(h => (
-                <div
-                  key={h.id}
-                  className="bg-white rounded-xl shadow-md p-4 flex justify-between items-center"
-                >
-                  <div>
-                    <p className="font-semibold text-gray-800">
-                      {h.title}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {h.category} • {h.priority}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        h.priority === "High"
-                          ? "bg-red-100 text-red-600"
-                          : h.priority === "Medium"
-                          ? "bg-yellow-100 text-yellow-600"
-                          : "bg-green-100 text-green-600"
-                      }`}
-                    >
-                      {h.priority}
-                    </span>
-
-                    <button
-                      onClick={() => deleteHabit(h.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
-                    >
-                      Delete
-                    </button>
-
-                  </div>
-
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => editHabit(h)}
+                    className="text-yellow-500"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteHabit(h.id)}
+                    className="text-red-500"
+                  >
+                    Delete
+                  </button>
                 </div>
-              ))}
-
-            </div>
-          )}
-
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>

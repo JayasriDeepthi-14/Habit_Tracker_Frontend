@@ -1,34 +1,36 @@
-import { BrowserRouter,Routes,Route } from "react-router-dom";
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Habits from "./pages/Habits";
 import Reports from "./pages/Reports";
+import Streak from "./pages/Streak";
+import Me from "./pages/Me";
+import Layout from "./components/Layout";
 
-import { AuthProvider } from "./context/AuthContext";
-
-export default function App(){
-
-  return(
-
+export default function App() {
+  return (
     <AuthProvider>
+      <BrowserRouter>
+        <Routes>
 
-    <BrowserRouter>
+          {/* Public */}
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-      <Routes>
+          {/* Protected Layout */}
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/habits" element={<Habits />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/streak" element={<Streak />} />
+            <Route path="/me" element={<Me />} />
+          </Route>
 
-        <Route path="/" element={<Login/>}/>
-        <Route path="/register" element={<Register/>}/>
-        <Route path="/dashboard" element={<Dashboard/>}/>
-        <Route path="/habits" element={<Habits/>}/>
-        <Route path="/reports" element={<Reports/>}/>
-
-      </Routes>
-
-    </BrowserRouter>
-
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

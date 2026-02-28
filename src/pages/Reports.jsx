@@ -1,149 +1,91 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
 import api from "../services/api";
-
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Bar, Pie } from "react-chartjs-2";
-import dayjs from "dayjs";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 export default function Reports() {
 
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    api.get("/habits/logs")
-      .then(res => {
-        setLogs(res.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    const load = async () => {
+      const res = await api.get("/reports");
+      setData(res.data);
+    };
+    load();
   }, []);
 
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <div className="p-6">Loading reports...</div>
-      </>
-    );
-  }
-
-  if (!logs || logs.length === 0) {
-    return (
-      <>
-        <Header />
-        <div className="p-6 text-gray-500">
-          No tracking data available yet.
-        </div>
-      </>
-    );
-  }
-
-  // 🔹 Calculate Status Counts
-  const completed = logs.filter(l => l.status === "completed").length;
-  const skipped = logs.filter(l => l.status === "skipped").length;
-  const missed = logs.filter(l => l.status === "missed").length;
-
-  const total = logs.length;
-  const percentage = total ? Math.round((completed / total) * 100) : 0;
-
-  // 🔹 Weekly Calculation
-  const last7Days = Array.from({ length: 7 }).map((_, i) =>
-    dayjs().subtract(i, "day").format("YYYY-MM-DD")
-  ).reverse();
-
-  const weeklyData = last7Days.map(date =>
-    logs.filter(
-      l => dayjs(l.date).format("YYYY-MM-DD") === date &&
-           l.status === "completed"
-    ).length
-  );
-
-  const barData = {
-    labels: last7Days.map(d => dayjs(d).format("ddd")),
-    datasets: [
-      {
-        label: "Completed Habits",
-        data: weeklyData,
-        backgroundColor: "rgba(59,130,246,0.7)",
-      },
-    ],
-  };
-
-  const pieData = {
-    labels: ["Completed", "Skipped", "Missed"],
-    datasets: [
-      {
-        data: [completed, skipped, missed],
-        backgroundColor: [
-          "rgba(34,197,94,0.7)",
-          "rgba(234,179,8,0.7)",
-          "rgba(239,68,68,0.7)",
-        ],
-      },
-    ],
-  };
+  if (!data) return <div>Loading...</div>;
 
   return (
     <>
-      <Header />
+    
+      <div className="p-6 space-y-8">
 
-      <div className="min-h-screen bg-gray-100 p-6">
+        {/* Summary Cards */}
+        <div className="grid md:grid-cols-3 gap-6">
 
-        <h2 className="text-3xl font-bold text-blue-600 mb-6">
-          📊 Reports & Analytics
-        </h2>
+          <div className="bg-blue-500 text-white p-6 rounded-xl">
+            <h3>Total Habits</h3>
+            <p className="text-3xl font-bold">
+              {data.totalHabits}
+            </p>
+          </div>
 
-        {/* Completion Percentage */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <h3 className="text-xl font-semibold mb-3">
-            Completion Rate
-          </h3>
+          <div className="bg-green-500 text-white p-6 rounded-xl">
+            <h3>Total Completed</h3>
+            <p className="text-3xl font-bold">
+              {data.totalCompleted}
+            </p>
+          </div>
 
-          <div className="w-full bg-gray-200 rounded-full h-6">
-            <div
-              className="bg-blue-600 h-6 rounded-full text-white text-sm flex items-center justify-center"
-              style={{ width: `${percentage}%` }}
-            >
-              {percentage}%
-            </div>
+          <div className="bg-purple-500 text-white p-6 rounded-xl">
+            <h3>Completion %</h3>
+            <p className="text-3xl font-bold">
+              {data.completionPercentage}%
+            </p>
+          </div>
+
+        </div>
+
+        {/* Weekly Data */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">
+            Last 7 Days
+          </h2>
+
+          <div className="space-y-3">
+            {data.weekly.map(day => (
+              <div
+                key={day.date}
+                className="flex justify-between bg-gray-100 p-3 rounded"
+              >
+                <span>{day.date}</span>
+                <span className="font-semibold">
+                  {day.count} Completed
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Weekly Bar Chart */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <h3 className="text-xl font-semibold mb-4">
-            Weekly Completed Habits
-          </h3>
-          <Bar data={barData} />
-        </div>
+        {/* Category Breakdown */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">
+            Category Breakdown
+          </h2>
 
-        {/* Status Distribution */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-xl font-semibold mb-4">
-            Habit Status Distribution
-          </h3>
-          <Pie data={pieData} />
+          <div className="space-y-3">
+            {Object.keys(data.categories).map(cat => (
+              <div
+                key={cat}
+                className="flex justify-between bg-gray-100 p-3 rounded"
+              >
+                <span>{cat}</span>
+                <span className="font-semibold">
+                  {data.categories[cat]}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
