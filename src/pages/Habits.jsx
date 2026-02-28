@@ -227,7 +227,7 @@ export default function Habits() {
                 key={h.id}
                 className="bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition duration-200 border border-gray-100 dark:border-gray-700"
               >
-                <span className="dark:text-white">
+                <span>
                   {h.title}
                 </span>
 
