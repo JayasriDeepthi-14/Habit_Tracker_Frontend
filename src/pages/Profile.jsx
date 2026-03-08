@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
-export default function Me() {
+export default function Profile() {
 
   const [stats, setStats] = useState(null);
 

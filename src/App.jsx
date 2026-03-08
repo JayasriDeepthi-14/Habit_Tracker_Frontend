@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Habits from "./pages/Habits";
 import Reports from "./pages/Reports";
 import Streak from "./pages/Streak";
-import Me from "./pages/Me";
+import Profile from "./pages/Profile";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -33,7 +33,7 @@ export default function App() {
             <Route path="/habits" element={<Habits />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/streak" element={<Streak />} />
-            <Route path="/me" element={<Me />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
 
         </Routes>

@@ -1,19 +1,21 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Layout() {
+
   const { user, logout } = useContext(AuthContext);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const menu = [
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Habits", path: "/habits" },
-    { name: "Reports", path: "/reports" },
-    { name: "Streak", path: "/streak" },
-    { name: "Me", path: "/me" },
+    { name: "Dashboard", path: "/dashboard", icon: "📊" },
+    { name: "Habits", path: "/habits", icon: "📝" },
+    { name: "Reports", path: "/reports", icon: "📈" },
+    { name: "Streak", path: "/streak", icon: "🔥" },
+    { name: "Profile", path: "/profile", icon: "👤" }
   ];
 
   const handleLogout = () => {
@@ -22,67 +24,83 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-
-      {/* Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-40"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+    <div className="flex h-screen bg-background overflow-hidden">
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-md z-50 transform transition-transform duration-300
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`${
+          collapsed ? "w-20" : "w-64"
+        } bg-white shadow-md transition-all duration-300 flex flex-col`}
       >
-        <div className="p-6">
-          <h1 className="text-xl font-bold text-primary">
-            Habit Tracker
-          </h1>
+
+        {/* Header */}
+        <div className="flex items-center justify-between p-5">
+
+          {!collapsed && (
+            <h1 className="text-xl font-bold text-primary">
+              Habit Tracker
+            </h1>
+          )}
+
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="text-gray-600 text-lg"
+          >
+            {collapsed ? ">" : "<"}
+          </button>
+
         </div>
 
-        <nav className="flex flex-col gap-4 p-6">
+        {/* Menu */}
+        <nav className="flex flex-col gap-3 px-4 mt-4">
+
           {menu.map((item) => (
+
             <button
               key={item.name}
-              onClick={() => {
-                navigate(item.path);
-                setSidebarOpen(false);
-              }}
-              className={`text-left ${
+              onClick={() => navigate(item.path)}
+              className={`flex items-center gap-3 p-3 rounded-lg transition ${
                 location.pathname === item.path
-                  ? "text-primary font-bold"
-                  : "text-gray-700"
+                  ? "bg-gray-200 font-semibold"
+                  : "hover:bg-gray-100"
               }`}
             >
-              {item.name}
+
+              <span className="text-lg">{item.icon}</span>
+
+              {!collapsed && (
+                <span>{item.name}</span>
+              )}
+
             </button>
+
           ))}
+
+        </nav>
+
+        {/* Logout */}
+        <div className="mt-auto p-4">
 
           <button
             onClick={handleLogout}
-            className="mt-6 bg-red-500 text-white py-2 rounded-lg"
+            className="flex items-center gap-3 bg-red-500 text-white p-3 rounded-lg w-full justify-center"
           >
-            Logout
+
+            <span className="text-lg">⏻</span>
+
+            {!collapsed && "Logout"}
+
           </button>
-        </nav>
+
+        </div>
+
       </aside>
 
       {/* Main Content */}
-      <div>
+      <div className="flex-1 flex flex-col">
 
-        {/* Topbar */}
-        <div className="flex justify-between items-center p-4 bg-white shadow-md">
-
-          {/* Hamburger ALWAYS visible */}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="text-2xl"
-          >
-            ☰
-          </button>
+        {/* Topbar (Fixed) */}
+        <div className="flex justify-end items-center p-4 bg-white shadow-md shrink-0">
 
           <h2 className="font-semibold">
             Welcome, {user?.name}
@@ -90,11 +108,13 @@ export default function Layout() {
 
         </div>
 
-        <div className="p-6">
+        {/* Scrollable Page Area */}
+        <div className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </div>
 
       </div>
+
     </div>
   );
 }
