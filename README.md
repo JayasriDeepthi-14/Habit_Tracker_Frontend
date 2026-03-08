@@ -108,7 +108,7 @@ User can create their own Login UserId and Password
 ![Reports](screenshots/reports.png)
 
 ### Me Page
-![Profile](screenshots/me.png)
+![Profile](screenshots/profile.png)
 
 ---
 
