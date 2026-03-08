@@ -93,10 +93,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6 space-y-10">
+    <div className="space-y-10">
 
       {/* Stats */}
-      <div className="grid md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         <div className="bg-white p-6 rounded-xl shadow">
           <h3 className="text-gray-500">Today's Progress</h3>
@@ -141,7 +141,7 @@ export default function Dashboard() {
           Today's Tasks
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
           {habits.map(h => {
 
@@ -182,7 +182,8 @@ export default function Dashboard() {
       </div>
 
       {/* Weekly Graph */}
-      <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-white p-6 rounded-xl shadow w-full overflow-x-auto">
+
         <h2 className="text-xl font-semibold mb-4">
           Weekly Activity
         </h2>
@@ -190,8 +191,9 @@ export default function Dashboard() {
         {weekly.length > 0 && (
           <Bar data={chartData} />
         )}
+
       </div>
-      
+
       {/* Completed Today */}
       <div>
 

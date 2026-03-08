@@ -36,7 +36,6 @@ export default function Reports() {
 
   if (!data) return <div>Loading...</div>;
 
-  /* Graph Data */
   const chartData = {
     labels: data.weekly.map(day => day.date),
     datasets: [
@@ -58,10 +57,10 @@ export default function Reports() {
   };
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="space-y-8">
 
-      {/* Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
+      {/* Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <div className="bg-blue-500 text-white p-6 rounded-xl">
           <h3>Total Habits</h3>
@@ -86,55 +85,75 @@ export default function Reports() {
 
       </div>
 
-      {/* Graph Section */}
-      <div className="bg-white p-6 rounded-xl shadow">
+      {/* Chart */}
+      <div className="bg-white p-6 rounded-xl shadow w-full overflow-x-auto">
+
         <h2 className="text-xl font-semibold mb-4">
           Weekly Habit Completion
         </h2>
 
         <Bar data={chartData} options={chartOptions} />
+
       </div>
 
       {/* Weekly Data */}
       <div>
+
         <h2 className="text-xl font-semibold mb-4">
           Last 7 Days
         </h2>
 
         <div className="space-y-3">
+
           {data.weekly.map(day => (
+
             <div
               key={day.date}
               className="flex justify-between bg-gray-100 p-3 rounded"
             >
+
               <span>{day.date}</span>
+
               <span className="font-semibold">
                 {day.count} Completed
               </span>
+
             </div>
+
           ))}
+
         </div>
+
       </div>
 
-      {/* Category Breakdown */}
+      {/* Categories */}
       <div>
+
         <h2 className="text-xl font-semibold mb-4">
           Category Breakdown
         </h2>
 
         <div className="space-y-3">
+
           {Object.keys(data.categories).map(cat => (
+
             <div
               key={cat}
               className="flex justify-between bg-gray-100 p-3 rounded"
             >
+
               <span>{cat}</span>
+
               <span className="font-semibold">
                 {data.categories[cat]}
               </span>
+
             </div>
+
           ))}
+
         </div>
+
       </div>
 
     </div>

@@ -24,20 +24,19 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen w-full bg-background overflow-hidden">
 
       {/* Sidebar */}
       <aside
-        className={`${
-          collapsed ? "w-20" : "w-64"
-        } bg-white shadow-md transition-all duration-300 flex flex-col`}
+        className={`${collapsed ? "w-16 md:w-20" : "w-56 md:w-64"}
+        bg-white shadow-md transition-all duration-300 flex flex-col`}
       >
 
         {/* Header */}
-        <div className="flex items-center justify-between p-5">
+        <div className="flex items-center justify-between p-4 md:p-5">
 
           {!collapsed && (
-            <h1 className="text-xl font-bold text-primary">
+            <h1 className="text-lg md:text-xl font-bold text-primary">
               Habit Tracker
             </h1>
           )}
@@ -52,7 +51,7 @@ export default function Layout() {
         </div>
 
         {/* Menu */}
-        <nav className="flex flex-col gap-3 px-4 mt-4">
+        <nav className="flex flex-col gap-2 px-2 md:px-4 mt-4">
 
           {menu.map((item) => (
 
@@ -68,9 +67,7 @@ export default function Layout() {
 
               <span className="text-lg">{item.icon}</span>
 
-              {!collapsed && (
-                <span>{item.name}</span>
-              )}
+              {!collapsed && <span>{item.name}</span>}
 
             </button>
 
@@ -79,7 +76,7 @@ export default function Layout() {
         </nav>
 
         {/* Logout */}
-        <div className="mt-auto p-4">
+        <div className="mt-auto p-3 md:p-4">
 
           <button
             onClick={handleLogout}
@@ -97,19 +94,19 @@ export default function Layout() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* Topbar (Fixed) */}
+        {/* Topbar */}
         <div className="flex justify-end items-center p-4 bg-white shadow-md shrink-0">
 
-          <h2 className="font-semibold">
+          <h2 className="font-semibold text-sm md:text-base">
             Welcome, {user?.name}
           </h2>
 
         </div>
 
-        {/* Scrollable Page Area */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Scrollable Page */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 w-full">
           <Outlet />
         </div>
 
