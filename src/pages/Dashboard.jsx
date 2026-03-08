@@ -134,17 +134,6 @@ export default function Dashboard() {
           : `🔥 Keep going! ${remaining} habits left today.`}
       </div>
 
-      {/* Weekly Graph */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-semibold mb-4">
-          Weekly Activity
-        </h2>
-
-        {weekly.length > 0 && (
-          <Bar data={chartData} />
-        )}
-      </div>
-
       {/* Today's Tasks */}
       <div>
 
@@ -192,6 +181,17 @@ export default function Dashboard() {
 
       </div>
 
+      {/* Weekly Graph */}
+      <div className="bg-white p-6 rounded-xl shadow">
+        <h2 className="text-xl font-semibold mb-4">
+          Weekly Activity
+        </h2>
+
+        {weekly.length > 0 && (
+          <Bar data={chartData} />
+        )}
+      </div>
+      
       {/* Completed Today */}
       <div>
 
