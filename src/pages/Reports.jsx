@@ -85,17 +85,6 @@ export default function Reports() {
 
       </div>
 
-      {/* Chart */}
-      <div className="bg-white p-6 rounded-xl shadow w-full overflow-x-auto">
-
-        <h2 className="text-xl font-semibold mb-4">
-          Weekly Habit Completion
-        </h2>
-
-        <Bar data={chartData} options={chartOptions} />
-
-      </div>
-
       {/* Weekly Data */}
       <div>
 
